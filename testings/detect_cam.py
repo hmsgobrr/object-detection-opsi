@@ -23,11 +23,11 @@ cap = cv2.VideoCapture(int(args['input']))
 frame_width = int(cap.get(3))
 frame_height = int(cap.get(4))
 
-save_name = f"{args['input'].split('/')[-1].split('.')[0]}"
+# save_name = f"{args['input'].split('/')[-1].split('.')[0]}"
 
-out = cv2.VideoWriter(f"outputs/{save_name}.mp4", 
-                      cv2.VideoWriter_fourcc(*'mp4v'), 30, 
-                      (frame_width, frame_height))
+# out = cv2.VideoWriter(f"outputs/{save_name}.mp4", 
+#                       cv2.VideoWriter_fourcc(*'mp4v'), 30, 
+#                       (frame_width, frame_height))
 
 frame_count = 0 # to count total frames
 total_fps = 0 # to get the final frames per second
@@ -53,15 +53,16 @@ while True:
         total_fps += fps
         # fps
         frame_count += 1
+        print(f"FPS {fps}")
         # write the FPS on frame
-        cv2.putText(image, f"{fps:.3f} FPS", (15, 30), cv2.FONT_HERSHEY_SIMPLEX,
-                    1, (0, 255, 0), 2)
+        # cv2.putText(image, f"{fps:.3f} FPS", (15, 30), cv2.FONT_HERSHEY_SIMPLEX,
+                    # 1, (0, 255, 0), 2)
         # press `q` to exit
         wait_time = max(1, int(fps/4))
         # chane color format
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        cv2.imshow('image', image)
-        out.write(image)
+        # cv2.imshow('image', image)
+        # out.write(image)
         if cv2.waitKey(wait_time) & 0xFF == ord('q'):
             break
 
