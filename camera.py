@@ -16,6 +16,16 @@ class VideoStream:
         self.rcam.set(cv2.CAP_PROP_FRAME_HEIGHT, camres[1])
         self.rcam.set(cv2.CAP_PROP_FPS, framerate)
 
+        ret, read = self.lcam.read()
+        if not ret:
+            print("HEYA NO FREM FROM LEFT CAM")
+        self.lframe = cv2.resize(read, (self.detres[0], self.detres[1]/2), interpolation=cv2.INTER_NEAREST)
+
+        ret, read = self.rcam.read()
+        if not ret:
+            print("HEYA NO FREM FROM RIGHT CAM")
+        self.rframe = cv2.resize(read, (self.detres[0], self.detres[1]/2), interpolation=cv2.INTER_NEAREST)
+
         self.stopped = False
 
         self.lock = Lock()
