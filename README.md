@@ -1,8 +1,7 @@
 # Object Detection for Blind with MobileNet V3
 A research project made for the Indonesian Student Research Olympiad / Olimpiade Penelitian Siswa Indonesia (OPSI)
 \n
-A revision of the [Vizhat Object Detection](https://github.com/hmsgobrr/vizhat-objectdetection) project, uses
-(PyTorch)[https://pytorch.org/] (TensorFlow Lite)[https://www.tensorflow.org/lite], and utilizes the new MobileNet V3 model.
+A revision of the [Vizhat Object Detection](https://github.com/hmsgobrr/vizhat-objectdetection) project, utilizes the new MobileNet V3 model.
 ## Setup on RaspberryPi 4B
 Install required dependencies
 ```sh
@@ -14,7 +13,7 @@ Create virtual environment and install required python libraries
 ```sh
 python3 -m venv ~/venv
 source ~/venv/bin/activate
-pip install torch torchvision opencv-python-headless
+pip install torch opencv-python-headless
 pip install pyttsx3 # for text-to-speech
 ```
 Setup bluetooth earphone for text-to-speech output
@@ -35,5 +34,5 @@ Clone repository & run program (do not exit the virtual environment yet)
 ```sh
 git clone https://github.com/hmsgobrr/object-detection-opsi.git
 cd object-detection-opsi
-python detect_vid.py
+python detect.py
 ```

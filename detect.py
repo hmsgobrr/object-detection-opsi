@@ -1,5 +1,6 @@
 import cv2
 import time
+from camera import VideoStream
 
 # Load COCO labels
 with open('coco.names') as f:
@@ -14,11 +15,7 @@ net.setInputScale(1.0 / 127.5)
 net.setInputMean((127.5, 127.5, 127.5))
 net.setInputSwapRB(True)
 
-# Open video capture
-cap = cv2.VideoCapture(0)
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 224)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 224)
-cap.set(cv2.CAP_PROP_FPS, 36)
+stream = VideoStream().start()
 
 started = time.time()
 last_logged = time.time()
@@ -27,12 +24,7 @@ frame_count = 0
 thres = 0.56
 
 while True:
-    ret, frame = cap.read()
-    if not ret:
-        print("Failed to grab frame")
-        break
-
-    classIds, confs, bbox = net.detect(frame, confThreshold=thres)
+    classIds, confs, bbox = net.detect(stream.read(), confThreshold=thres)
     if len(classIds) != 0:
         for classId, confidence, box in zip(classIds.flatten(), confs.flatten(), bbox):
             label = f'{labels[classId - 1]}: {confidence:.2f}'
@@ -53,5 +45,5 @@ while True:
     # if cv2.waitKey(1) == ord('q'):
     #     break
 
-cap.release()
-cv2.destroyAllWindows()
+# cap.release()
+# cv2.destroyAllWindows()
