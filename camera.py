@@ -19,12 +19,12 @@ class VideoStream:
         ret, read = self.lcam.read()
         if not ret:
             print("HEYA NO FREM FROM LEFT CAM")
-        self.lframe = cv2.resize(read, (self.detres[0], self.detres[1]/2), interpolation=cv2.INTER_NEAREST)
+        self.lframe = cv2.resize(read, (self.detres[0], int(self.detres[1]/2)), interpolation=cv2.INTER_NEAREST)
 
         ret, read = self.rcam.read()
         if not ret:
             print("HEYA NO FREM FROM RIGHT CAM")
-        self.rframe = cv2.resize(read, (self.detres[0], self.detres[1]/2), interpolation=cv2.INTER_NEAREST)
+        self.rframe = cv2.resize(read, (self.detres[0], int(self.detres[1]/2)), interpolation=cv2.INTER_NEAREST)
 
         self.stopped = False
 
@@ -46,7 +46,7 @@ class VideoStream:
                 camstr = "left" if isleft else "right"
                 print(f"[ERROR] Failed to read from {camstr} camera")
                 return
-            frame = cv2.resize(read, (self.detres[0], self.detres[1]/2), interpolation=cv2.INTER_NEAREST)
+            frame = cv2.resize(read, (self.detres[0], int(self.detres[1]/2)), interpolation=cv2.INTER_NEAREST)
 
             with self.lock:
                 if isleft:
