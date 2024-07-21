@@ -1,6 +1,6 @@
 import cv2
 
-cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+cap = cv2.VideoCapture(0)
 
 # Minimal resolution for wide aspect ratio
 # Nemesis around 270x135

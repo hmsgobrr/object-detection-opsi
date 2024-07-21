@@ -33,7 +33,8 @@ class VideoStream:
 
             ret, read = cam.read()
             if not ret:
-                print(f"[WARN] Failed to read from {"left" if isleft else "right"} camera")
+                camstr = "left" if isleft else "right"
+                print(f"[ERROR] Failed to read from {camstr} camera")
                 continue
             frame = cv2.resize(read, (self.detres[0], self.detres[1]/2), interpolation=cv2.INTER_NEAREST)
 
