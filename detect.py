@@ -21,7 +21,7 @@ net.setInputScale(1.0 / 127.5)
 net.setInputMean((127.5, 127.5, 127.5))
 net.setInputSwapRB(True)
 
-stream = VideoStream(lcamidx=args.li, rcamidx=args.ri).start()
+stream = VideoStream(lcamidx=int(args.li), rcamidx=int(args.ri)).start()
 
 started = time.time()
 last_logged = time.time()
