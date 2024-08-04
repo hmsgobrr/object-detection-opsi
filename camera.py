@@ -6,12 +6,12 @@ class VideoStream:
     def __init__(self, camres=(540,270), detres=(320, 320), framerate=36, lcamidx=0, rcamidx=1):
         self.detres = detres
 
-        self.lcam = cv2.VideoCapture(lcamidx, cv2.CAP_V4L2)
+        self.lcam = cv2.VideoCapture(lcamidx)
         self.lcam.set(cv2.CAP_PROP_FRAME_WIDTH, camres[0])
         self.lcam.set(cv2.CAP_PROP_FRAME_HEIGHT, camres[1])
         self.lcam.set(cv2.CAP_PROP_FPS, framerate)
 
-        self.rcam = cv2.VideoCapture(rcamidx, cv2.CAP_V4L2)
+        self.rcam = cv2.VideoCapture(rcamidx)
         self.rcam.set(cv2.CAP_PROP_FRAME_WIDTH, camres[0])
         self.rcam.set(cv2.CAP_PROP_FRAME_HEIGHT, camres[1])
         self.rcam.set(cv2.CAP_PROP_FPS, framerate)
