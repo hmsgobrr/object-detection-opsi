@@ -33,7 +33,7 @@ class VideoStream:
         if not ret:
             camstr = "left" if isleft else "right"
             print(f"[ERROR] Failed to read from {camstr} camera")
-            return
+            exit()
         return cv2.resize(read, (self.detres[0], int(self.detres[1]/2)), interpolation=cv2.INTER_NEAREST)
 
     def update(self, cam, isleft):
@@ -46,7 +46,7 @@ class VideoStream:
                 if isleft:
                     self.lframe = self.getframe(self.lcam, True)
                 else:
-                    self.rframe = self.getframe(self.lcam, False)
+                    self.rframe = self.getframe(self.rcam, False)
 
     def read(self):
         with self.lock:
