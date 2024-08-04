@@ -1,6 +1,12 @@
 import cv2
 import time
+import argparse
 from camera import VideoStream
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--li", help="Left camera index", default=0)
+parser.add_argument("--ri", help="Right camera index", default=1)
+args = parser.parse_args()
 
 # Load COCO labels
 with open('coco.names') as f:
@@ -15,7 +21,7 @@ net.setInputScale(1.0 / 127.5)
 net.setInputMean((127.5, 127.5, 127.5))
 net.setInputSwapRB(True)
 
-stream = VideoStream().start()
+stream = VideoStream(lcamidx=args.li, rcamidx=args.ri).start()
 
 started = time.time()
 last_logged = time.time()
