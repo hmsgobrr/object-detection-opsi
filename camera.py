@@ -3,7 +3,7 @@ import numpy as np
 from threading import Thread, Lock
 
 class VideoStream:
-    def __init__(self, camres=(540,270), detres=(320, 320), framerate=36, lcamidx=0, rcamidx=2):
+    def __init__(self, camres=(540,270), detres=(320, 320), framerate=36, lcamidx=0, rcamidx=1):
         self.detres = detres
 
         self.lcam = cv2.VideoCapture(lcamidx, cv2.CAP_V4L2)
@@ -56,7 +56,9 @@ class VideoStream:
 
     def read(self):
         with self.lock:
-            return np.vstack((self.lframe, self.rframe))
+            stacked = np.vstack((self.lframe, self.rframe))
+            cv2.imwrite("outputs/ast.jpg", stacked)
+            return stacked
 
     def stop(self):
         self.stopped = True
