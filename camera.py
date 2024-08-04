@@ -16,15 +16,8 @@ class VideoStream:
         self.rcam.set(cv2.CAP_PROP_FRAME_HEIGHT, camres[1])
         self.rcam.set(cv2.CAP_PROP_FPS, framerate)
 
-        ret, read = self.lcam.read()
-        if not ret:
-            print("HEYA NO FREM FROM LEFT CAM")
-        self.lframe = cv2.resize(read, (self.detres[0], int(self.detres[1]/2)), interpolation=cv2.INTER_NEAREST)
-
-        ret, read = self.rcam.read()
-        if not ret:
-            print("HEYA NO FREM FROM RIGHT CAM")
-        self.rframe = cv2.resize(read, (self.detres[0], int(self.detres[1]/2)), interpolation=cv2.INTER_NEAREST)
+        self.lframe = None
+        self.rframe = None
 
         self.stopped = False
 
@@ -35,27 +28,32 @@ class VideoStream:
         Thread(target=self.update, args=(self.rcam, False)).start()
         return self
 
+    def getframe(self, cam, isleft):
+        ret, read = cam.read()
+        if not ret:
+            camstr = "left" if isleft else "right"
+            print(f"[ERROR] Failed to read from {camstr} camera")
+            return
+        return cv2.resize(read, (self.detres[0], int(self.detres[1]/2)), interpolation=cv2.INTER_NEAREST)
+
     def update(self, cam, isleft):
         while True:
             if self.stopped:
                 cam.release()
                 return
-
-            ret, read = cam.read()
-            if not ret:
-                camstr = "left" if isleft else "right"
-                print(f"[ERROR] Failed to read from {camstr} camera")
-                return
-            frame = cv2.resize(read, (self.detres[0], int(self.detres[1]/2)), interpolation=cv2.INTER_NEAREST)
-
+            
             with self.lock:
                 if isleft:
-                    self.lframe = frame
+                    self.lframe = self.getframe(self.lcam, True)
                 else:
-                    self.rframe = frame
+                    self.rframe = self.getframe(self.lcam, False)
 
     def read(self):
         with self.lock:
+            if self.lframe is None:
+                self.lframe = self.getframe(self.lcam, True)
+            if self.rframe is None:
+                self.rframe = self.getframe(self.rcam, False)
             stacked = np.vstack((self.lframe, self.rframe))
             cv2.imwrite("outputs/ast.jpg", stacked)
             return stacked
