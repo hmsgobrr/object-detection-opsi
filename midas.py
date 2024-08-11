@@ -66,6 +66,8 @@ def process_frame(frame):
     return frame
 
 def main():
+    global frame_count
+
     while True:
         start_time = time.time()
         ret, frame = cap.read()
