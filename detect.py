@@ -22,25 +22,31 @@ net.setInputSwapRB(True)
 midas_model_path = "model-small.onnx"
 ort_session = ort.InferenceSession(midas_model_path)
 def transform_image(image):
-    transform = T.Compose([
-        T.ToTensor(),
-        T.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
-    ])
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    # Resize the image to 256x256 (required input size for MiDaS)
     image = cv2.resize(image, (256, 256))
-    image = transform(image).unsqueeze(0)
-    return image.numpy()
+    # Normalize the image to the range [-1, 1]
+    image = image.astype(np.float32) / 127.5 - 1.0
+    # Convert HWC to CHW format (required by the model)
+    image = np.transpose(image, (2, 0, 1))
+    # Add batch dimension (N, C, H, W)
+    image = np.expand_dims(image, axis=0)
+    return image
 
 # Init Cam
 stream = VideoStream().start()
 
-started = time.time()
-last_logged = time.time()
+# Limit frame rate
+target_fps = 10  # Set target FPS for Raspberry Pi
+frame_interval = 1.0 / target_fps
 frame_count = 0
+frame_width = 320
+frame_height = 320
 
-thres = 0.56
+thres = 0.6
 
 while True:
+    start_time = time.time()
+
     # Capture image
     frame = stream.read()
 
@@ -56,6 +62,8 @@ while True:
 
     # Resize depth map to match frame size
     depth_map = cv2.resize(depth_map, (frame.shape[1], frame.shape[0]))
+    # Resize depth map to match frame size
+    depth_map = cv2.resize(depth_map, (frame_width, frame_height))
 
     # # Normalize depth map for visualization
     # depth_map_normalized = cv2.normalize(depth_map, None, 0, 255, cv2.NORM_MINMAX)
@@ -84,12 +92,13 @@ while True:
     # cv2.imshow('frame', frame)
     
     frame_count += 1
-    now = time.time()
-    if now - last_logged > 1:
-        fps = frame_count / (now - last_logged)
-        print(f"{fps:.2f} fps")
-        last_logged = now
-        frame_count = 0
+    elapsed_time = time.time() - start_time
+    fps = 1 / elapsed_time
+    print(f"FPS: {fps:.2f}")
+
+    # Limit frame rate (Biar Optimized, and CPU no overheat yaya)
+    time_to_wait = max(0, frame_interval - elapsed_time)
+    time.sleep(time_to_wait)
     
     # if cv2.waitKey(1) == ord('q'):
     #     break
