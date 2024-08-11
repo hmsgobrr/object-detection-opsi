@@ -39,13 +39,11 @@ if not cap.isOpened():
 frame_width = 160
 frame_height = 120
 thres = 0.60
-frame_count = 0
 target_fps = 5
 frame_interval = 1.0 / target_fps
 
 def process_frame(frame):
-    frame_resized = cv2.resize(frame, (frame_width, frame_height))
-    classIds, confs, bbox = net.detect(frame_resized, confThreshold=thres)
+    classIds, confs, bbox = net.detect(frame, confThreshold=thres)
 
     input_image = transform_image(frame)
     ort_inputs = {ort_session.get_inputs()[0].name: input_image}
@@ -58,16 +56,14 @@ def process_frame(frame):
             x, y, w, h = box
             depth_values = depth_map[y:y+h, x:x+w]
             avg_depth = np.mean(depth_values)
-            label = f'{labels[classId - 1]}: {confidence:.2f}, Depth: {avg_depth:.2f}'
+            label = f'{labels[classId - 1]}: {confidence:.2f}, Depth: {avg_depth:.2f}m'
             # cv2.rectangle(frame, box, color=(0, 255, 0), thickness=2)
             # cv2.putText(frame, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-            print(label)
+            print(f"Object: {labels[classId - 1]}, Confidence: {confidence:.2f}, Avg Depth: {avg_depth:.2f}")
 
     return frame
 
 def main():
-    global frame_count
-
     while True:
         start_time = time.time()
         ret, frame = cap.read()
@@ -75,15 +71,15 @@ def main():
             print("Failed to grab frame")
             break
 
-        # Start frame processing in a separate thread
-        thread = Thread(target=process_frame, args=(frame,))
-        thread.start()
-        thread.join()
+        # Resize the frame early
+        frame_resized = cv2.resize(frame, (frame_width, frame_height))
+
+        # Process the frame in the same thread to avoid context switching overhead
+        processed_frame = process_frame(frame_resized)
 
         # Display the frame with detections
-        # cv2.imshow('THE', frame)
+        # cv2.imshow('THE', processed_frame)
 
-        frame_count += 1
         elapsed_time = time.time() - start_time
         fps = 1 / elapsed_time
         print(f"FPS: {fps:.2f}")
