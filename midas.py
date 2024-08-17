@@ -59,8 +59,8 @@ def process_frame(frame):
             depth_values = depth_map[y:y+h, x:x+w]
             avg_depth = np.mean(depth_values)
             label = f'{labels[classId - 1]}: {confidence:.2f}, Depth: {avg_depth:.2f}m'
-            cv2.rectangle(frame, box, color=(0, 255, 0), thickness=2)
-            cv2.putText(frame, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            # cv2.rectangle(frame, box, color=(0, 255, 0), thickness=2)
+            # cv2.putText(frame, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
             print(f"Object: {labels[classId - 1]}, Confidence: {confidence:.2f}, Avg Depth: {avg_depth:.2f}")
 
     return frame
@@ -85,7 +85,7 @@ def main():
 
         processed_frame = process_frame(frame_resized)
 
-        cv2.imshow('Object Detection and Depth Estimation', processed_frame)
+        # cv2.imshow('Object Detection and Depth Estimation', processed_frame)
 
         elapsed_time = time.time() - start_time
         fps = 1 / elapsed_time
@@ -94,8 +94,8 @@ def main():
         time_to_wait = max(0, frame_interval - elapsed_time)
         time.sleep(time_to_wait)
 
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+        # if cv2.waitKey(1) & 0xFF == ord('q'):
+        #     break
 
     cap.release()
     cv2.destroyAllWindows()
