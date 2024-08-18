@@ -1,7 +1,7 @@
 import cv2
 import time
 import numpy as np
-import tensorflow as tf
+from tflite_runtime.interpreter import Interpreter, load_delegate
 
 # Load COCO labels
 with open('coco.names') as f:
@@ -9,8 +9,8 @@ with open('coco.names') as f:
 
 # Initialize Object Detection model (MobileNet SSD using TensorFlow Lite)
 model_path = "ssd_mobilenet_v3_large_coco_2020_01_14.pbtxt"
-interpreter = tf.lite.Interpreter(model_path=model_path,
-                                  experimental_delegates=[tf.lite.experimental.load_delegate('libtensorflowlite_gpu_delegate.so')])
+interpreter = Interpreter(model_path=model_path,
+                                  experimental_delegates=[load_delegate('libtensorflowlite_gpu_delegate.so')])
 interpreter.allocate_tensors()
 
 # Get input and output tensors for object detection
@@ -19,8 +19,8 @@ output_details = interpreter.get_output_details()
 
 # Load TinyDepth model for depth estimation
 depth_model_path = "1.tflite"
-depth_interpreter = tf.lite.Interpreter(model_path=depth_model_path,
-                                        experimental_delegates=[tf.lite.experimental.load_delegate('libtensorflowlite_gpu_delegate.so')])
+depth_interpreter = Interpreter(model_path=depth_model_path,
+                                        experimental_delegates=[load_delegate('libtensorflowlite_gpu_delegate.so')])
 depth_interpreter.allocate_tensors()
 
 depth_input_details = depth_interpreter.get_input_details()
