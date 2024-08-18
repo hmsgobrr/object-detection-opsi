@@ -27,7 +27,9 @@ while True:
     classIds, confs, bbox = net.detect(stream.read(), confThreshold=thres)
     if len(classIds) != 0:
         for classId, confidence, box in zip(classIds.flatten(), confs.flatten(), bbox):
-            label = f'{labels[classId - 1]}: {confidence:.2f}, CVD {box.area()*100/(51200)}%'
+            boxw = int(box[2])-int(box[0])
+            boxh = int(box[3])-int(box[1])
+            label = f'{labels[classId - 1]}: {confidence:.2f}, CVD {boxw*boxh*100/(51200)}%'
             print(f"Detected {label}")
             # cv2.rectangle(frame, box, color=(0, 255, 0), thickness=2)
             # cv2.putText(frame, label, (box[0], box[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
