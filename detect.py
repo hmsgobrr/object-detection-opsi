@@ -30,8 +30,14 @@ while True:
         for classId, confidence, box in zip(classIds.flatten(), confs.flatten(), bbox):
             boxw = int(box[2])-int(box[0])
             boxh = int(box[3])-int(box[1])
+
+            if labels[classId - 1] == 'person':
+                dist = (boxw*boxh/(51200))*15
+
             label = f'{labels[classId - 1]}: {confidence:.2f}, CVD {boxw*boxh*100/(51200)}%'
             print(f"Detected {label}")
+            if dist != None:
+                print(f"\tAt distance: {dist} meters")
             cv2.rectangle(frame, box, color=(0, 255, 0), thickness=2)
             cv2.putText(frame, label, (box[0], box[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
     cv2.imwrite("outputs/detectboxout.jpg", frame)
