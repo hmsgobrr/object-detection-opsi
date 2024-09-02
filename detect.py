@@ -6,6 +6,16 @@ from camera import VideoStream
 with open('coco.names') as f:
     labels = f.read().rstrip('\n').split('\n')
 
+KNOWN_WIDTHS = {
+    'couch': 145,
+    'person': 50,
+    'backpack': 40,
+    'chair': 60,
+    'bottle': 8
+}
+FOCLEN_DA = 170
+FOCLEN_NS = 215
+
 # Load the model
 configPath = 'ssd_mobilenet_v3_large_coco_2020_01_14.pbtxt'
 weightsPath = 'frozen_inference_graph.pb'
@@ -28,14 +38,14 @@ while True:
     classIds, confs, bbox = net.detect(frame, confThreshold=thres)
     if len(classIds) != 0:
         for classId, confidence, box in zip(classIds.flatten(), confs.flatten(), bbox):
-            boxw = int(box[2])-int(box[0])
-            boxh = int(box[3])-int(box[1])
+            x, y, w, h = box
 
             dist = -1
-            if labels[classId - 1] == 'person':
-                dist = (boxw*boxh/(51200))*15
+            if labels[classId - 1] in KNOWN_WIDTHS.keys():
+                focal_len = FOCLEN_DA if y > 160 else FOCLEN_NS
+                dist = (KNOWN_WIDTHS[labels[classId - 1]]*focal_len)/w
 
-            label = f'{labels[classId - 1]}: {confidence:.2f}, CVD {boxw*boxh*100/(51200)}%'
+            label = f'{labels[classId - 1]}: {confidence:.2f}'
             print(f"Detected {label}")
             if dist != -1:
                 print(f"\tAt distance: {dist} meters")

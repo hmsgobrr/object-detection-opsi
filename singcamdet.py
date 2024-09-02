@@ -7,8 +7,8 @@ import time
 with open('coco.names') as f:
     labels = f.read().rstrip('\n').split('\n')
 
-frame_width = 270
-frame_height = 135
+frame_width = 320
+frame_height = 160
 det_input_size = max(frame_width, frame_height)
 
 # Initialize Object Detection model (MobileNet SSD)
@@ -32,7 +32,7 @@ net.setInputSwapRB(True)
 #     return image
 
 # Initialize camera capture
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 540)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 270)
 
@@ -62,7 +62,7 @@ def process_frame(frame):
             x, y, w, h = box
             # focal_len = 150
             if labels[classId - 1] == 'couch':
-                print(f"FOCAL LEN: {(w*400)/145}")
+                print(f"FOCAL LEN: {(w*220)/145}")
                 # dist = (145*focal_len)/w
                 # print(f"COUCH DIST: {dist} cm")
             # depth_values = depth_map[y:y+h, x:x+w]
