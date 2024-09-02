@@ -4,7 +4,7 @@ from threading import Thread, Lock
 import logging
 
 class VideoStream:
-    def _init_(self, camres=(540, 270), detres=(320, 320), framerate=36, lcamidx=0, rcamidx=2):
+    def __init__(self, camres=(540, 270), detres=(320, 320), framerate=36, lcamidx=0, rcamidx=2):
         self.detres = detres
         self.stopped = False
         self.lock = Lock()
