@@ -43,7 +43,11 @@ thres = 0.56
 while True:
     frame = stream.read()
     classIds, confs, bbox = net.detect(frame, confThreshold=thres)
-    detecsreng = {'distant': {}, 'close': {}}
+    detecsreng = {
+        'in front of you': {'distant': {}, 'close': {}},
+        'on your right': {'distant': {}, 'close': {}},
+        'on your left': {'distant': {}, 'close': {}}
+    }
     if len(classIds) != 0:
         for classId, confidence, box in zip(classIds.flatten(), confs.flatten(), bbox):
             x, y, w, h = box
@@ -58,11 +62,15 @@ while True:
             if dist != -1:
                 print(f"\tAt distance: {dist} meters")
             
+            print(f'\t\t{y-160}')
+
             detecsreng['far' if dist > 1000 else 'close'][labels[classId - 1]] = detecsreng['far' if dist > 1000 else 'close'].get(labels[classId - 1],0)+1
             cv2.rectangle(frame, box, color=(0, 255, 0), thickness=2)
             cv2.putText(frame, label, (box[0], box[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
             cv2.imwrite(f"outputs/{labels[classId - 1]}.jpg", frame)
     for distens in detecsreng.keys():
+        if len(detecsreng[distens]) < 1:
+            continue
         speech = ""
         for obj in detecsreng[distens].keys():
             speech += f"{detecsreng[distens][obj]} {obj}, "
