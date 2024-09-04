@@ -48,36 +48,56 @@ while True:
         'on your right': {'distant': {}, 'close': {}},
         'on your left': {'distant': {}, 'close': {}}
     }
+    
+    frame_width = frame.shape[1]
+    frame_height = frame.shape[0]
+    
     if len(classIds) != 0:
         for classId, confidence, box in zip(classIds.flatten(), confs.flatten(), bbox):
             x, y, w, h = box
+            cx = x + w/2
+            cy = y + h/2
 
             dist = -1
             if labels[classId - 1] in KNOWN_WIDTHS.keys():
-                focal_len = FOCLEN_DA if y > 160 else FOCLEN_NS
-                dist = (KNOWN_WIDTHS[labels[classId - 1]]*focal_len)/w
+                focal_len = FOCLEN_DA if y > frame_height/2 else FOCLEN_NS
+                dist = (KNOWN_WIDTHS[labels[classId - 1]] * focal_len) / w
 
             label = f'{labels[classId - 1]}: {confidence:.2f}'
             print(f"Detected {label}")
             if dist != -1:
                 print(f"\tAt distance: {dist} meters")
             
-            print(f'\t\t{y-160}')
+            position = 'in front of you'  # Default to center
+            # right camera = frame 1
+            if cy < frame_height/2 and cx > frame_width/2:
+                position = 'on your right'
+            # left camera = frame 2
+            elif cy > frame_height/2 and cx < frame_width/2:
+                position = 'on your left'
 
-            detecsreng['far' if dist > 1000 else 'close'][labels[classId - 1]] = detecsreng['far' if dist > 1000 else 'close'].get(labels[classId - 1],0)+1
+            # if cx < frame_width / 3:
+            #     position = 'on your left'
+            # elif cy > 2 * frame_width / 3:
+            #     position = 'on your right'
+
+            detecsreng[position]['distant' if dist > 1000 else 'close'][labels[classId - 1]] = detecsreng[position]['distant' if dist > 1000 else 'close'].get(labels[classId - 1], 0) + 1
+
             cv2.rectangle(frame, box, color=(0, 255, 0), thickness=2)
             cv2.putText(frame, label, (box[0], box[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
             cv2.imwrite(f"outputs/{labels[classId - 1]}.jpg", frame)
-    for distens in detecsreng.keys():
-        if len(detecsreng[distens]) < 1:
-            continue
-        speech = ""
-        for obj in detecsreng[distens].keys():
-            speech += f"{detecsreng[distens][obj]} {obj}, "
-        speech += " " + distens
-        engine.say(speech)
-        engine.runAndWait()
 
+    for direction in detecsreng.keys():
+        for range_category in detecsreng[direction]:
+            if len(detecsreng[direction][range_category]) < 1:
+                continue
+            speech = ""
+            for obj in detecsreng[direction][range_category].keys():
+                speech += f"{detecsreng[direction][range_category][obj]} {obj}, "
+            speech += f"{range_category} {direction}"
+            engine.say(speech)
+            engine.runAndWait()
+            
     cv2.imwrite("outputs/detectboxout.jpg", frame)
 
     # cv2.imshow('frame', frame)
