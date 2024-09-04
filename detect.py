@@ -51,6 +51,7 @@ while True:
                 print(f"\tAt distance: {dist} meters")
             cv2.rectangle(frame, box, color=(0, 255, 0), thickness=2)
             cv2.putText(frame, label, (box[0], box[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            cv2.imwrite(f"outputs/{labels[classId - 1]}.jpg", frame)
     cv2.imwrite("outputs/detectboxout.jpg", frame)
 
     # cv2.imshow('frame', frame)
