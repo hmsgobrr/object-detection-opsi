@@ -1,7 +1,14 @@
 import cv2
 import pyttsx3
 import time
+import argparse
 from camera import VideoStream
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-n', '--novoice', action='store_true')
+# parser.add_argument('-d', '--nodist', action='store_true')
+NO_VOICE = parser.novoice
+# NO_DIST = parser.nodist
 
 # Load COCO labels
 with open('coco.names') as f:
@@ -87,16 +94,17 @@ while True:
             cv2.putText(frame, label, (box[0], box[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
             cv2.imwrite(f"outputs/{labels[classId - 1]}.jpg", frame)
 
-    for direction in detecsreng.keys():
-        for range_category in detecsreng[direction]:
-            if len(detecsreng[direction][range_category]) < 1:
-                continue
-            speech = ""
-            for obj in detecsreng[direction][range_category].keys():
-                speech += f"{detecsreng[direction][range_category][obj]} {obj}, "
-            speech += f"{range_category} {direction}"
-            engine.say(speech)
-            engine.runAndWait()
+    if not NO_VOICE:
+        for direction in detecsreng.keys():
+            for range_category in detecsreng[direction]:
+                if len(detecsreng[direction][range_category]) < 1:
+                    continue
+                speech = ""
+                for obj in detecsreng[direction][range_category].keys():
+                    speech += f"{detecsreng[direction][range_category][obj]} {obj}, "
+                speech += f"{range_category} {direction}"
+                engine.say(speech)
+                engine.runAndWait()
             
     cv2.imwrite("outputs/detectboxout.jpg", frame)
 
