@@ -67,7 +67,8 @@ while True:
         for obj in detecsreng[distens].keys():
             speech += f"{detecsreng[distens][obj]} {obj}, "
         speech += " " + distens
-        engine.runAndWait(speech)
+        engine.say(speech)
+        engine.runAndWait()
 
     cv2.imwrite("outputs/detectboxout.jpg", frame)
 
