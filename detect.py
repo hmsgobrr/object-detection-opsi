@@ -1,4 +1,5 @@
 import cv2
+import pyttsx3
 import time
 from camera import VideoStream
 
@@ -11,10 +12,16 @@ KNOWN_WIDTHS = {
     'person': 50,
     'backpack': 40,
     'chair': 60,
-    'bottle': 8
+    'bottle': 8,
+    'car': 300
 }
 FOCLEN_DA = 170
 FOCLEN_NS = 215
+
+engine = pyttsx3.init(driverName='espeak')
+# voices = engine.getProperty('voices')
+# engine.setProperty('voice', voices[39])
+engine.setProperty('rate', 150)
 
 # Load the model
 configPath = 'ssd_mobilenet_v3_large_coco_2020_01_14.pbtxt'
@@ -36,6 +43,7 @@ thres = 0.56
 while True:
     frame = stream.read()
     classIds, confs, bbox = net.detect(frame, confThreshold=thres)
+    detecsreng = {'distant': {}, 'close': {}}
     if len(classIds) != 0:
         for classId, confidence, box in zip(classIds.flatten(), confs.flatten(), bbox):
             x, y, w, h = box
@@ -49,9 +57,18 @@ while True:
             print(f"Detected {label}")
             if dist != -1:
                 print(f"\tAt distance: {dist} meters")
+            
+            detecsreng['far' if dist > 1000 else 'close'][labels[classId - 1]] = detecsreng['far' if dist > 1000 else 'close'].get(labels[classId - 1],0)+1
             cv2.rectangle(frame, box, color=(0, 255, 0), thickness=2)
             cv2.putText(frame, label, (box[0], box[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
             cv2.imwrite(f"outputs/{labels[classId - 1]}.jpg", frame)
+    for distens in detecsreng.keys():
+        speech = ""
+        for obj in detecsreng[distens].keys():
+            speech += f"{detecsreng[distens][obj]} {obj}, "
+        speech += " " + distens
+        engine.runAndWait(speech)
+
     cv2.imwrite("outputs/detectboxout.jpg", frame)
 
     # cv2.imshow('frame', frame)
