@@ -2,6 +2,8 @@ import cv2
 import pyttsx3
 import time
 import argparse
+from threading import Thread
+from statistics import mean
 from camera import VideoStream
 
 parser = argparse.ArgumentParser()
@@ -48,7 +50,19 @@ frame_count = 0
 
 thres = 0.56
 
-while True:
+fpses = []
+
+run = True
+
+def listenexit():
+    while run:
+        i = input()
+        if i == "q":
+            run = False
+            stream.stop()
+            print("## AVERAGE FPS:", mean(fpses))
+
+while run:
     frame = stream.read()
     classIds, confs, bbox = net.detect(frame, confThreshold=thres)
     detecsreng = {
@@ -116,6 +130,7 @@ while True:
     if now - last_logged > 1:
         fps = frame_count / (now - last_logged)
         print(f"{fps:.2f} fps")
+        fpses.append(fps)
         last_logged = now
         frame_count = 0
     
