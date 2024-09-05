@@ -67,6 +67,7 @@ exthd = Thread(target=listenexit)
 exthd.start()
 
 while run:
+    startdet = time.time()
     frame = stream.read()
     classIds, confs, bbox = net.detect(frame, confThreshold=thres)
     detecsreng = {
@@ -113,6 +114,7 @@ while run:
             cv2.putText(frame, label, (box[0], box[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
             cv2.imwrite(f"outputs/{labels[classId - 1]}.jpg", frame)
 
+    print("\t## DETECT P. DELAY", time.time()-startdet)
     if not NO_VOICE:
         for direction in detecsreng.keys():
             for range_category in detecsreng[direction]:
