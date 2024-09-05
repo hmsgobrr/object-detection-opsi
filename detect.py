@@ -7,7 +7,7 @@ from camera import VideoStream
 parser = argparse.ArgumentParser()
 parser.add_argument('-n', '--novoice', action='store_true')
 # parser.add_argument('-d', '--nodist', action='store_true')
-NO_VOICE = parser.novoice
+NO_VOICE = parser['novoice']
 # NO_DIST = parser.nodist
 
 # Load COCO labels
