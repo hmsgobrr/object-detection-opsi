@@ -62,6 +62,9 @@ def listenexit():
             stream.stop()
             print("## AVERAGE FPS:", mean(fpses))
 
+exthd = Thread(target=listenexit)
+exthd.start()
+
 while run:
     frame = stream.read()
     classIds, confs, bbox = net.detect(frame, confThreshold=thres)
