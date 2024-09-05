@@ -55,6 +55,7 @@ fpses = []
 run = True
 
 def listenexit():
+    global run
     while run:
         i = input()
         if i == "q":
