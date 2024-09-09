@@ -71,9 +71,9 @@ while run:
     frame = stream.read()
     classIds, confs, bbox = net.detect(frame, confThreshold=thres)
     detecsreng = {
-        'in front of you': {'distant': {}, 'close': {}},
-        'on your right': {'distant': {}, 'close': {}},
-        'on your left': {'distant': {}, 'close': {}}
+        'in front of you': {'distant': {}, 'mid-range': {}, 'close': {}, 'none': {}},
+        'on your right': {'distant': {}, 'mid-range': {}, 'close': {}, 'none': {}},
+        'on your left': {'distant': {}, 'mid-range': {}, 'close': {}, 'none': {}}
     }
     
     frame_width = frame.shape[1]
@@ -94,6 +94,14 @@ while run:
             print(f"Detected {label}")
             if dist != -1:
                 print(f"\tAt distance: {dist} meters")
+
+            distcateg = 'none'
+            if dist > 350:
+                distcateg = 'distant'
+            elif dist > 120:
+                distcateg = 'mid-range'
+            elif dist > 0:
+                distcateg = 'close'
             
             position = 'in front of you'  # Default to center
             # right camera = frame 1
@@ -108,7 +116,7 @@ while run:
             # elif cy > 2 * frame_width / 3:
             #     position = 'on your right'
 
-            detecsreng[position]['distant' if dist > 1000 else 'close'][labels[classId - 1]] = detecsreng[position]['distant' if dist > 1000 else 'close'].get(labels[classId - 1], 0) + 1
+            detecsreng[position][distcateg][labels[classId - 1]] = detecsreng[position]['distant' if dist > 1000 else 'close'].get(labels[classId - 1], 0) + 1
 
             cv2.rectangle(frame, box, color=(0, 255, 0), thickness=2)
             cv2.putText(frame, label, (box[0], box[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
