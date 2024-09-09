@@ -163,4 +163,4 @@ while run and video.isOpened():
 # Release resources
 print("## AVG FPS: ", sum(fpses)/len(fpses))
 video.release()
-cv2.destroyAllWindows()
+# cv2.destroyAllWindows()
