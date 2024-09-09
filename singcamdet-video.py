@@ -66,7 +66,7 @@ exthd.start()
 
 save_name = f"{VIDEO_PATH.split('/')[-1].split('.')[0]}"
 
-frame_height, frame_width, frame_width_i = 1280, 720, 320
+frame_height, frame_width = 1280, 720
 
 out = cv2.VideoWriter(f"outputs/{save_name}.mp4", 
                       cv2.VideoWriter_fourcc(*'mp4v'), 30, 
@@ -88,9 +88,11 @@ while run and video.isOpened():
     startdet = time.time()
     
     # Split the fraem
-    frame = cv2.resize(frame, (320, 320), interpolation=cv2.INTER_NEAREST)
-    top_frame = frame[:, :frame_width_i // 2]
-    bottom_frame = frame[:, frame_width_i // 2:]
+    
+    top_frame = frame[:, :320 // 2]
+    top_frame = cv2.resize(top_frame, (320, 160), interpolation=cv2.INTER_NEAREST)
+    bottom_frame = frame[:, 320 // 2:]
+    bottom_frame = cv2.resize(bottom_frame, (320, 160), interpolation=cv2.INTER_NEAREST)
     combined_frame = np.vstack((top_frame, bottom_frame))
 
     
