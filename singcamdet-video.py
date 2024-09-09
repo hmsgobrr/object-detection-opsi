@@ -71,6 +71,13 @@ out = cv2.VideoWriter(f"outputs/{save_name}.mp4",
                       cv2.VideoWriter_fourcc(*'mp4v'), 30, 
                       (320, 320))
 
+started = time.time()
+last_logged = time.time()
+frame_count = 0
+fpses = []
+frame_count = 0 # to count total frames
+total_fps = 0 # to get the final frames per second
+
 # Video processing loop
 while run and video.isOpened():
     ret, frame = video.read()
@@ -141,9 +148,19 @@ while run and video.isOpened():
 
     out.write(combined_frame)
 
+    frame_count += 1
+    now = time.time()
+    if now - last_logged > 1:
+        fps = frame_count / (now - last_logged)
+        print(f"{fps:.2f} fps")
+        fpses.append(fps)
+        last_logged = now
+        frame_count = 0
+
     # if cv2.waitKey(1) == ord('q'):
     #     break
 
 # Release resources
+print("## AVG FPS: ", sum(fpses)/len(fpses))
 video.release()
 cv2.destroyAllWindows()
