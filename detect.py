@@ -131,6 +131,8 @@ while run:
                 speech = ""
                 for obj in detecsreng[direction][range_category].keys():
                     speech += f"{detecsreng[direction][range_category][obj]} {obj}, "
+                if range_category == 'none':
+                    range_category = ''
                 speech += f"{range_category} {direction}"
                 engine.say(speech)
                 engine.runAndWait()
