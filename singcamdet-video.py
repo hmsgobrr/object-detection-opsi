@@ -88,10 +88,9 @@ while run and video.isOpened():
     startdet = time.time()
     
     # Split the fraem
-    top_frame = frame[:, :frame_width // 2]
-    top_frame = cv2.resize(top_frame, (320, 160), interpolation=cv2.INTER_NEAREST)
-    bottom_frame = frame[:, frame_width//2:]
-    bottom_frame = cv2.resize(bottom_frame, (320, 160), interpolation=cv2.INTER_NEAREST)
+    skibiframe = cv2.resize(frame, (320, 320), interpolation=cv2.INTER_NEAREST)
+    top_frame = skibiframe[:, :320 // 2]
+    bottom_frame = skibiframe[:, 320 // 2:]
     combined_frame = np.vstack((top_frame, bottom_frame))
 
     
