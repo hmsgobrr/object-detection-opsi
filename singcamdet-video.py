@@ -2,6 +2,7 @@ import cv2
 import pyttsx3
 import time
 import argparse
+import numpy as np
 from threading import Thread
 from statistics import mean
 
@@ -91,7 +92,7 @@ while run and video.isOpened():
     top_frame = cv2.resize(top_frame, (320, 160), interpolation=cv2.INTER_NEAREST)
     bottom_frame = frame[frame_width // 2:, :]
     bottom_frame = cv2.resize(bottom_frame, (320, 160), interpolation=cv2.INTER_NEAREST)
-    combined_frame = cv2.vconcat([top_frame, bottom_frame])
+    combined_frame = np.vstack((top_frame, bottom_frame))
 
     
     # Perform object detection on both top and bottom halfse
