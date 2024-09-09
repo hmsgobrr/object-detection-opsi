@@ -96,9 +96,9 @@ while run:
                 print(f"\tAt distance: {dist} meters")
 
             distcateg = 'none'
-            if dist > 350:
+            if dist > 400:
                 distcateg = 'distant'
-            elif dist > 120:
+            elif dist > 250:
                 distcateg = 'mid-range'
             elif dist > 0:
                 distcateg = 'close'
