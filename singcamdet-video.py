@@ -141,8 +141,8 @@ while run and video.isOpened():
 
     out.write(combined_frame)
 
-    if cv2.waitKey(1) == ord('q'):
-        break
+    # if cv2.waitKey(1) == ord('q'):
+    #     break
 
 # Release resources
 video.release()
