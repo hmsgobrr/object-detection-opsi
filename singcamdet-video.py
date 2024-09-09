@@ -7,11 +7,11 @@ from statistics import mean
 
 # Argument parsing
 parser = argparse.ArgumentParser()
-parser.add_argument('-n', '--novoice', action='store_true')
+# parser.add_argument('-n', '--novoice', action='store_true')
 parser.add_argument('-v', '--video', type=str, required=True, help="Path to the input video file")
 args = parser.parse_args()
 
-NO_VOICE = args.novoice
+# NO_VOICE = args.novoice
 VIDEO_PATH = args.video
 
 # Load COCO labels
@@ -63,7 +63,7 @@ def listenexit():
 exthd = Thread(target=listenexit)
 exthd.start()
 
-save_name = f"{args['input'].split('/')[-1].split('.')[0]}"
+save_name = f"{VIDEO_PATH.split('/')[-1].split('.')[0]}"
 
 frame_height, frame_width = 1280, 720
 
