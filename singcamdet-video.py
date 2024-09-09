@@ -81,7 +81,9 @@ while run and video.isOpened():
     
     # Split the fraem
     top_frame = frame[:frame_height // 2, :]
+    top_frame = cv2.resize(top_frame, (320, 160), interpolation=cv2.INTER_NEAREST)
     bottom_frame = frame[frame_height // 2:, :]
+    bottom_frame = cv2.resize(bottom_frame, (320, 160), interpolation=cv2.INTER_NEAREST)
     combined_frame = cv2.vconcat([top_frame, bottom_frame])
 
     
