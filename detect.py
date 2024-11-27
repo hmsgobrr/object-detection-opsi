@@ -158,8 +158,9 @@ while run:
                     quantity = detecsreng[direction][range_category][obj]
                     if obj in dalamoverlap:
                         quantity /= 2
+                        quantity = ceil(quantity)
 
-                    speech += f"{quantity} {ceil(obj)}, "
+                    speech += f"{quantity} {obj}, "
                 if range_category == 'none':
                     range_category = ''
                 speech += f"{range_category} {direction}"
