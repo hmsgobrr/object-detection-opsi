@@ -10,6 +10,7 @@ from statistics import mean
 from camera import VideoStream
 import logging
 import logging.handlers as handlers
+from math import ceil
 
 # Setup logger
 logger = logging.getLogger('VIZCAM')
@@ -158,7 +159,7 @@ while run:
                     if obj in dalamoverlap:
                         quantity /= 2
 
-                    speech += f"{quantity} {obj}, "
+                    speech += f"{quantity} {ceil(obj)}, "
                 if range_category == 'none':
                     range_category = ''
                 speech += f"{range_category} {direction}"
