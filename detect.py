@@ -75,6 +75,9 @@ while run:
         'on your right': {'distant': {}, 'mid-range': {}, 'close': {}, 'none': {}},
         'on your left': {'distant': {}, 'mid-range': {}, 'close': {}, 'none': {}}
     }
+    dalamoverlap = []
+    loverlapreg = 5/8
+    roverlapreg = 3/8
     
     frame_width = frame.shape[1]
     frame_height = frame.shape[0]
@@ -111,6 +114,9 @@ while run:
             elif cy > frame_height/2 and cx < frame_width/2:
                 position = 'on your left'
 
+            if (cy < frame_height/2 and cx <= frame_width*roverlapreg) or (cy > frame_height/2 and cx >= frame_width*loverlapreg):
+                dalamoverlap.append(labels[classId - 1])
+                
             # if cx < frame_width / 3:
             #     position = 'on your left'
             # elif cy > 2 * frame_width / 3:
@@ -130,7 +136,11 @@ while run:
                     continue
                 speech = ""
                 for obj in detecsreng[direction][range_category].keys():
-                    speech += f"{detecsreng[direction][range_category][obj]} {obj}, "
+                    quantity = detecsreng[direction][range_category][obj]
+                    if obj in dalamoverlap:
+                        quantity /= 2
+
+                    speech += f"{quantity} {obj}, "
                 if range_category == 'none':
                     range_category = ''
                 speech += f"{range_category} {direction}"
